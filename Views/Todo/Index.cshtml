@@ -1,0 +1,261 @@
+@model IEnumerable<TodoApp.Models.TodoItem>
+@{
+    ViewData["Title"] = "My Tasks";
+    var statistics = ViewBag.Statistics as Dictionary<string, int> ?? new Dictionary<string, int>();
+    var categories = ViewBag.Categories as IEnumerable<string> ?? new List<string>();
+    var currentCategory = ViewBag.CurrentCategory as string;
+    var searchTerm = ViewBag.SearchTerm as string;
+}
+
+<div class="container-fluid">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="display-4 fw-bold text-primary mb-0">My Tasks</h1>
+                    <p class="text-muted mb-0">Stay organized and productive</p>
+                </div>
+                <div>
+                    <a asp-action="Create" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus me-2"></i>New Task
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-2 col-sm-6 mb-3">
+            <div class="card bg-primary text-white h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-tasks fa-2x mb-2"></i>
+                    <h3 class="card-title">@statistics.GetValueOrDefault("Total", 0)</h3>
+                    <p class="card-text">Total Tasks</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 col-sm-6 mb-3">
+            <div class="card bg-success text-white h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-check-circle fa-2x mb-2"></i>
+                    <h3 class="card-title">@statistics.GetValueOrDefault("Completed", 0)</h3>
+                    <p class="card-text">Completed</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 col-sm-6 mb-3">
+            <div class="card bg-warning text-white h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-clock fa-2x mb-2"></i>
+                    <h3 class="card-title">@statistics.GetValueOrDefault("Pending", 0)</h3>
+                    <p class="card-text">Pending</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 col-sm-6 mb-3">
+            <div class="card bg-danger text-white h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                    <h3 class="card-title">@statistics.GetValueOrDefault("Overdue", 0)</h3>
+                    <p class="card-text">Overdue</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 col-sm-6 mb-3">
+            <div class="card bg-info text-white h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-star fa-2x mb-2"></i>
+                    <h3 class="card-title">@statistics.GetValueOrDefault("High Priority", 0)</h3>
+                    <p class="card-text">High Priority</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <form method="get" class="d-flex">
+                <input type="text" name="search" value="@searchTerm" class="form-control me-2" placeholder="Search tasks..." />
+                <button type="submit" class="btn btn-outline-primary">
+                    <i class="fas fa-search"></i>
+                </button>
+                @if (!string.IsNullOrEmpty(searchTerm))
+                {
+                    <a asp-action="Index" class="btn btn-outline-secondary ms-2">
+                        <i class="fas fa-times"></i>
+                    </a>
+                }
+            </form>
+        </div>
+        <div class="col-md-4">
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">
+                    <i class="fas fa-filter me-2"></i>
+                    @(string.IsNullOrEmpty(currentCategory) ? "All Categories" : currentCategory)
+                </button>
+                <ul class="dropdown-menu w-100">
+                    <li><a class="dropdown-item" asp-action="Index">All Categories</a></li>
+                    @foreach (var category in categories)
+                    {
+                        <li><a class="dropdown-item" asp-action="Index" asp-route-category="@category">@category</a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tasks List -->
+    <div class="row">
+        <div class="col-12">
+            @if (!Model.Any())
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-clipboard-list fa-5x text-muted mb-3"></i>
+                    <h3 class="text-muted">No tasks found</h3>
+                    <p class="text-muted">@(string.IsNullOrEmpty(searchTerm) ? "Create your first task to get started!" : "Try adjusting your search or filters.")</p>
+                    @if (string.IsNullOrEmpty(searchTerm))
+                    {
+                        <a asp-action="Create" class="btn btn-primary btn-lg mt-3">
+                            <i class="fas fa-plus me-2"></i>Create First Task
+                        </a>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="card">
+                    <div class="card-body p-0">
+                        @foreach (var todo in Model)
+                        {
+                            <div class="task-item border-bottom p-3 @(todo.IsCompleted ? "completed" : "")" data-task-id="@todo.Id">
+                                <div class="row align-items-center">
+                                    <div class="col-auto">
+                                        <form asp-action="Toggle" method="post" class="d-inline toggle-form">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@todo.Id" />
+                                            <button type="submit" class="btn btn-link p-0 toggle-btn" title="@(todo.IsCompleted ? "Mark as pending" : "Mark as completed")">
+                                                <i class="@(todo.IsCompleted ? "fas fa-check-circle text-success" : "far fa-circle text-muted") fa-lg"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div class="col">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div class="flex-grow-1">
+                                                <h5 class="mb-1 @(todo.IsCompleted ? "text-decoration-line-through text-muted" : "")">@todo.Title</h5>
+                                                @if (!string.IsNullOrEmpty(todo.Description))
+                                                {
+                                                    <p class="mb-2 text-muted small @(todo.IsCompleted ? "text-decoration-line-through" : "")">@todo.Description</p>
+                                                }
+                                                <div class="d-flex flex-wrap gap-2 align-items-center">
+                                                    <span class="badge bg-secondary">@todo.Category</span>
+                                                    <span class="badge @GetPriorityBadgeClass(todo.Priority)">@todo.Priority Priority</span>
+                                                    @if (todo.DueDate.HasValue)
+                                                    {
+                                                        var isOverdue = !todo.IsCompleted && todo.DueDate < DateTime.Today;
+                                                        <span class="badge @(isOverdue ? "bg-danger" : "bg-info")">
+                                                            <i class="fas fa-calendar-alt me-1"></i>
+                                                            @todo.DueDate.Value.ToString("MMM dd, yyyy")
+                                                        </span>
+                                                    }
+                                                    @if (todo.IsCompleted && todo.CompletedAt.HasValue)
+                                                    {
+                                                        <small class="text-muted">
+                                                            <i class="fas fa-check me-1"></i>
+                                                            Completed @todo.CompletedAt.Value.ToString("MMM dd, yyyy")
+                                                        </small>
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="dropdown">
+                                                <button class="btn btn-link text-muted" type="button" data-bs-toggle="dropdown">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                    <li><a class="dropdown-item" asp-action="Edit" asp-route-id="@todo.Id">
+                                                        <i class="fas fa-edit me-2"></i>Edit
+                                                    </a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <form asp-action="Delete" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this task?')">
+                                                            @Html.AntiForgeryToken()
+                                                            <input type="hidden" name="id" value="@todo.Id" />
+                                                            <button type="submit" class="dropdown-item text-danger">
+                                                                <i class="fas fa-trash me-2"></i>Delete
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@functions {
+    private string GetPriorityBadgeClass(TodoApp.Models.Priority priority)
+    {
+        return priority switch
+        {
+            TodoApp.Models.Priority.Low => "bg-success",
+            TodoApp.Models.Priority.Medium => "bg-primary",
+            TodoApp.Models.Priority.High => "bg-warning",
+            TodoApp.Models.Priority.Urgent => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+}
+
+@section Scripts {
+    <script>
+        // AJAX toggle functionality
+        document.querySelectorAll('.toggle-form').forEach(form => {
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const taskId = this.querySelector('input[name="id"]').value;
+                const taskItem = this.closest('.task-item');
+                const toggleBtn = this.querySelector('.toggle-btn i');
+                
+                try {
+                    const response = await fetch('/Todo/ToggleAjax', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                        },
+                        body: JSON.stringify({ id: taskId })
+                    });
+                    
+                    if (response.ok) {
+                        const result = await response.json();
+                        if (result.success) {
+                            // Toggle visual state
+                            taskItem.classList.toggle('completed');
+                            if (toggleBtn.classList.contains('far')) {
+                                toggleBtn.className = 'fas fa-check-circle text-success fa-lg';
+                            } else {
+                                toggleBtn.className = 'far fa-circle text-muted fa-lg';
+                            }
+                            
+                            // Update statistics (optional - could reload or update via AJAX)
+                            setTimeout(() => location.reload(), 500);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error toggling task:', error);
+                    // Fallback to form submission
+                    this.submit();
+                }
+            });
+        });
+    </script>
+}
