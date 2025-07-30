@@ -5,6 +5,7 @@ A modern, feature-rich task management application built with ASP.NET Core 8.0, 
 ## 🚀 Features
 
 ### Core Functionality
+
 - **User Authentication** - Secure registration and login system
 - **Task Management** - Create, edit, delete, and toggle task completion
 - **Advanced Task Properties**:
@@ -15,6 +16,7 @@ A modern, feature-rich task management application built with ASP.NET Core 8.0, 
   - Completion timestamps
 
 ### User Experience
+
 - **Modern UI** - Professional Bootstrap 5 interface with Font Awesome icons
 - **Responsive Design** - Works seamlessly on desktop, tablet, and mobile
 - **Real-time Search** - Instant task filtering by title and description
@@ -23,6 +25,7 @@ A modern, feature-rich task management application built with ASP.NET Core 8.0, 
 - **AJAX Interactions** - Smooth task toggling without page refreshes
 
 ### Technical Features
+
 - **Database Persistence** - SQLite database with Entity Framework Core
 - **Service Layer Architecture** - Clean separation of concerns
 - **Data Validation** - Comprehensive input validation and error handling
@@ -46,17 +49,20 @@ A modern, feature-rich task management application built with ASP.NET Core 8.0, 
 ## 🚀 Getting Started
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd TodoApp
    ```
 
 2. **Restore packages**
+
    ```bash
    dotnet restore
    ```
 
 3. **Run the application**
+
    ```bash
    dotnet run
    ```
@@ -91,18 +97,21 @@ TodoApp/
 ## 🎯 Key Features Showcase
 
 ### Dashboard & Statistics
+
 - Visual task completion metrics
 - Category-based organization
 - Priority-based task sorting
 - Overdue task tracking
 
 ### Advanced Task Management
+
 - Rich task creation with multiple properties
 - Inline editing capabilities
 - Bulk operations support
 - Search and filtering
 
 ### Professional UI/UX
+
 - Modern gradient design
 - Intuitive navigation
 - Responsive layout
@@ -111,6 +120,7 @@ TodoApp/
 ## 🔧 Configuration
 
 ### Database
+
 The application uses SQLite by default. To use a different database:
 
 1. Update the connection string in `appsettings.json`
@@ -118,7 +128,9 @@ The application uses SQLite by default. To use a different database:
 3. Update `Program.cs` to use the new provider
 
 ### Authentication
+
 Identity settings can be customized in `Program.cs`:
+
 - Password requirements
 - Account confirmation settings
 - Lockout policies
@@ -126,6 +138,7 @@ Identity settings can be customized in `Program.cs`:
 ## 🧪 Testing
 
 The application includes comprehensive validation and error handling:
+
 - Model validation with data annotations
 - Client-side validation with jQuery
 - Server-side validation and sanitization
@@ -149,6 +162,7 @@ The application includes comprehensive validation and error handling:
 ## 🎨 Customization
 
 The application is designed for easy customization:
+
 - CSS custom properties for theming
 - Modular service architecture
 - Configurable validation rules
@@ -178,10 +192,11 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 👨‍💻 Developer
 
 **[Your Name]**
-- LinkedIn: [Your LinkedIn Profile]
-- GitHub: [Your GitHub Profile]
-- Email: [Your Email]
+
+- LinkedIn: linkedin.com/in/echem-izakahr-07456927a/
+- GitHub: github.com/Crackr25
+- Email: izakahr25@gmail.com
 
 ---
 
-*This project demonstrates modern web development practices including clean architecture, responsive design, database integration, authentication, and professional UI/UX design. It showcases proficiency in ASP.NET Core, Entity Framework, Bootstrap, and full-stack web development.*
+_This project demonstrates modern web development practices including clean architecture, responsive design, database integration, authentication, and professional UI/UX design. It showcases proficiency in ASP.NET Core, Entity Framework, Bootstrap, and full-stack web development._
